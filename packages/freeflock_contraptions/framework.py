@@ -126,7 +126,9 @@ class OperationGroup:
         self.kwargs = kwargs
 
     async def begin(self):
-        with GraphDatabase.driver(NEO4J_URI, auth=(NEO4J_USERNAME, NEO4J_PASSWORD)) as graph:
+        with GraphDatabase.driver(NEO4J_URI,
+                                  auth=(NEO4J_USERNAME, NEO4J_PASSWORD),
+                                  notifications_min_severity='OFF') as graph:
             operations = []
             for i in range(self.instance_count):
                 engagement_handle = str(i)
