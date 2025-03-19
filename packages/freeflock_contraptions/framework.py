@@ -35,24 +35,21 @@ class Operation(ABC):
                              f"{error}\n{traceback.format_exc()}")
 
     async def operate(self):
-        logger.info(f"{self.logging_identifier} querying node to engage")
         node_id_to_engage = await self.query_node_to_engage()
         if node_id_to_engage is None:
-            logger.info(f"{self.logging_identifier} did not find a node to engage")
             return False
 
-        logger.info(f"{self.logging_identifier} attempting to engage: {node_id_to_engage}")
         successfully_engaged = engage(self.graph, node_id_to_engage, self.engagement_handle, self.operation_name)
         if not successfully_engaged:
             logger.info(f"{self.logging_identifier} failed to engage: {node_id_to_engage}")
             return False
+        else:
+            logger.info(f"{self.logging_identifier} successfully engaged: {node_id_to_engage}")
 
-        logger.info(f"{self.logging_identifier} successfully engaged: {node_id_to_engage}")
         try:
             await self.act_on_engaged_node()
             return True
         finally:
-            logger.info(f"{self.logging_identifier} disengaging: {node_id_to_engage}")
             disengage(self.graph, node_id_to_engage, self.operation_name)
 
     @abstractmethod
@@ -139,3 +136,4 @@ class OperationGroup:
             async with TaskGroup() as group:
                 for operation in operations:
                     group.create_task(operation.loop())
+            logger.info(f"operation group exited")
