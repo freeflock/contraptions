@@ -6,7 +6,7 @@ from pydantic import BaseModel
 
 class OpenaiInference:
     def __init__(self):
-        self.openai_client = AsyncOpenAI()
+        self.openai_client = AsyncOpenAI(timeout=120)
 
     async def infer(self,
                     model_name: str,
