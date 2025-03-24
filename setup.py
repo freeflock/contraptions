@@ -1,13 +1,13 @@
 from setuptools import setup
 
 installation_requirements = [
-    "openai==1.66.3",
+    "openai==1.68.2",
     "loguru==0.7.3",
     "neo4j==5.28.1"
 ]
 
 setup(
-    version="0.4",
+    version="0.5",
     name="freeflock-contraptions",
     description="A collection of contraptions",
     author="(~)",
