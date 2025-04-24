@@ -5,6 +5,8 @@ from pydantic import BaseModel
 
 from packages.freeflock_contraptions.inference import OpenaiInference, GoogleInference
 
+api_key = os.getenv("GEMINI_API_KEY")
+
 
 @pytest.mark.asyncio
 async def test_infer():
@@ -32,7 +34,6 @@ async def test_infer_json():
 
 @pytest.mark.asyncio
 async def test_infer():
-    api_key = os.getenv("GEMINI_API_KEY")
     inference_client = GoogleInference(api_key)
     model_name = "gemini-2.0-flash"
     system_prompt = "You are a helpful assistant."
@@ -44,13 +45,24 @@ async def test_infer():
 
 @pytest.mark.asyncio
 async def test_infer_json():
-    api_key = os.getenv("GEMINI_API_KEY")
     inference_client = GoogleInference(api_key)
     model_name = "gemini-2.0-flash"
     system_prompt = "You are a helpful assistant."
     user_prompt = "What is the capital of France?"
     result = await inference_client.infer_json(model_name, system_prompt, user_prompt, Capital)
     assert "paris" in result.capital.lower()
+    print(result)
+
+
+@pytest.mark.asyncio
+async def test_infer_from_file():
+    inference_client = GoogleInference(api_key)
+    model_name = "gemini-2.0-flash"
+    system_prompt = "You are a helpful assistant."
+    user_prompt = "Describe this image."
+    file_path = "test_image.jpg"
+    result = await inference_client.infer_from_file(model_name, system_prompt, user_prompt, file_path)
+    assert "image" in result.lower()
     print(result)
 
 

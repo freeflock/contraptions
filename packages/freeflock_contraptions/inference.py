@@ -89,3 +89,18 @@ class GoogleInference:
             ),
         )
         return response.parsed
+
+    async def infer_from_file(self,
+                              model_name: str,
+                              system_prompt: str,
+                              user_prompt: str,
+                              file_path: str) -> str:
+        file = await self.google_client.aio.files.upload(file=file_path)
+        response = await self.google_client.aio.models.generate_content(
+            model=model_name,
+            contents=[user_prompt, file],
+            config=types.GenerateContentConfig(
+                system_instruction=system_prompt
+            ),
+        )
+        return response.text
