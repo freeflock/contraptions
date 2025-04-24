@@ -1,7 +1,9 @@
+import os
+
 import pytest
 from pydantic import BaseModel
 
-from packages.freeflock_contraptions.inference import OpenaiInference
+from packages.freeflock_contraptions.inference import OpenaiInference, GoogleInference
 
 
 @pytest.mark.asyncio
@@ -24,6 +26,30 @@ async def test_infer_json():
     user_prompt = "What is the capital of France?"
     reasoning_effort = "low"
     result = await inference_client.infer_json(model_name, system_prompt, user_prompt, reasoning_effort, Capital)
+    assert "paris" in result.capital.lower()
+    print(result)
+
+
+@pytest.mark.asyncio
+async def test_infer():
+    api_key = os.getenv("GEMINI_API_KEY")
+    inference_client = GoogleInference(api_key)
+    model_name = "gemini-2.0-flash"
+    system_prompt = "You are a helpful assistant."
+    user_prompt = "What is the capital of France?"
+    result = await inference_client.infer(model_name, system_prompt, user_prompt)
+    assert "paris" in result.lower()
+    print(result)
+
+
+@pytest.mark.asyncio
+async def test_infer_json():
+    api_key = os.getenv("GEMINI_API_KEY")
+    inference_client = GoogleInference(api_key)
+    model_name = "gemini-2.0-flash"
+    system_prompt = "You are a helpful assistant."
+    user_prompt = "What is the capital of France?"
+    result = await inference_client.infer_json(model_name, system_prompt, user_prompt, Capital)
     assert "paris" in result.capital.lower()
     print(result)
 
