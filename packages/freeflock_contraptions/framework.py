@@ -33,6 +33,7 @@ class Operation(ABC):
             except Exception as error:
                 logger.error(f"(!) unhandled exception in operation {self.logging_identifier}: "
                              f"{error}\n{traceback.format_exc()}")
+                await sleep(3)
 
     async def operate(self):
         node_id_to_engage = await self.query_node_to_engage()
