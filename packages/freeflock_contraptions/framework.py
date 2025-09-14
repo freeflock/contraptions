@@ -81,7 +81,7 @@ def engage(graph, node_id, engagement_handle, operation_name):
     response = graph.execute_query(
         """
         MATCH (engagee {node_id: $node_id})
-            AND NOT (:Engagement {operation: $operation_name})-[:ENGAGED]->(engagee)
+        WHERE NOT (:Engagement {operation: $operation_name})-[:ENGAGED]->(engagee)
         CREATE (engagement:Engagement {operation: $operation_name, 
                 engagement_handle: $engagement_handle})-[:ENGAGED]->(engagee)
         RETURN TRUE
