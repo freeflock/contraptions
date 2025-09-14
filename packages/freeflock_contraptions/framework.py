@@ -80,8 +80,7 @@ class Operation(ABC):
 def engage(graph, node_id, engagement_handle, operation_name):
     response = graph.execute_query(
         """
-        MATCH (engagee)
-        WHERE elementId(engagee) = $node_id
+        MATCH (engagee {node_id: $node_id})
             AND NOT (:Engagement {operation: $operation_name})-[:ENGAGED]->(engagee)
         CREATE (engagement:Engagement {operation: $operation_name, 
                 engagement_handle: $engagement_handle})-[:ENGAGED]->(engagee)
@@ -99,8 +98,7 @@ def engage(graph, node_id, engagement_handle, operation_name):
 def disengage(graph, node_id, operation_name):
     graph.execute_query(
         """
-        MATCH (engagement:Engagement {operation: $operation_name})-[:ENGAGED]->(engagee)
-        WHERE elementId(engagee) = $node_id
+        MATCH (engagement:Engagement {operation: $operation_name})-[:ENGAGED]->(engagee {node_id: $node_id})
         DETACH DELETE engagement
         """,
         node_id=node_id,
