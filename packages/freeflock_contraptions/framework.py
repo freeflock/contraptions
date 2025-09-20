@@ -1,4 +1,6 @@
+import json
 import os
+import random
 import traceback
 from abc import abstractmethod, ABC
 from asyncio import sleep, TaskGroup
@@ -27,13 +29,17 @@ class Operation(ABC):
             try:
                 result = await self.operate()
                 if result is False:
-                    await sleep(3)
+                    await sleep(random.uniform(0, 6))
             except KeyboardInterrupt:
                 raise
             except Exception as error:
-                logger.error(f"(!) unhandled exception in operation {self.logging_identifier}: "
-                             f"{error}\n{traceback.format_exc()}")
-                await sleep(3)
+                trace = {
+                    "trace": traceback.format_exc()
+                }
+                logger.error(
+                    f"(!) unhandled exception in operation {self.logging_identifier}: {error} - {json.dumps(trace)}"
+                )
+                await sleep(random.uniform(0, 6))
 
     async def operate(self):
         node_id_to_engage = await self.query_node_to_engage()
