@@ -1,6 +1,7 @@
 import json
 import os
 import random
+import time
 import traceback
 from abc import abstractmethod, ABC
 from asyncio import sleep, TaskGroup
@@ -12,6 +13,7 @@ from neo4j import GraphDatabase
 NEO4J_URI = os.getenv("NEO4J_URI")
 NEO4J_USERNAME = os.getenv("NEO4J_USERNAME")
 NEO4J_PASSWORD = os.getenv("NEO4J_PASSWORD")
+OPERATION_GROUP_TTL = int(os.getenv("OPERATION_GROUP_TTL"))
 
 
 class Operation(ABC):
@@ -25,7 +27,8 @@ class Operation(ABC):
         self.logging_identifier = f"{self.operation_name}[{self.engagement_handle}]"
 
     async def loop(self):
-        while True:
+        start_time = time.time()
+        while time.time() < start_time + OPERATION_GROUP_TTL:
             try:
                 result = await self.operate()
                 if result is False:
@@ -40,6 +43,7 @@ class Operation(ABC):
                     f"(!) unhandled exception in operation {self.logging_identifier}: {error} - {json.dumps(trace)}"
                 )
                 await sleep(random.uniform(0, 6))
+        logger.info(f"{self.logging_identifier} exiting after {OPERATION_GROUP_TTL / 60} minutes of operation")
 
     async def operate(self):
         node_id_to_engage = await self.query_node_to_engage()
@@ -143,4 +147,4 @@ class OperationGroup:
             async with TaskGroup() as group:
                 for operation in operations:
                     group.create_task(operation.loop())
-            logger.info(f"operation group exited")
+            logger.info(f"operation group concluded")

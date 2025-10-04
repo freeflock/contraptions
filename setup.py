@@ -1,14 +1,14 @@
 from setuptools import setup
 
 installation_requirements = [
-    "openai-agents==0.3.1",
+    "openai-agents==0.3.3",
     "loguru==0.7.3",
     "neo4j==5.28.2",
-    "google-genai==1.38.0"
+    "google-genai==1.41.0"
 ]
 
 setup(
-    version="1.2",
+    version="1.5",
     name="freeflock-contraptions",
     description="A collection of contraptions",
     author="(~)",
