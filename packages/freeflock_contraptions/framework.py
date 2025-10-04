@@ -28,7 +28,7 @@ class Operation(ABC):
 
     async def loop(self):
         start_time = time.time()
-        while time.time() < start_time + OPERATION_GROUP_TTL:
+        while time.time() > start_time + OPERATION_GROUP_TTL:
             try:
                 result = await self.operate()
                 if result is False:

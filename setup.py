@@ -8,7 +8,7 @@ installation_requirements = [
 ]
 
 setup(
-    version="1.5",
+    version="1.6",
     name="freeflock-contraptions",
     description="A collection of contraptions",
     author="(~)",
